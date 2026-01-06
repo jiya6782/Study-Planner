@@ -44,7 +44,7 @@ if option == "Add Task":
     name = st.text_input("Assignment/Test Name")
     priority = st.selectbox("Priority", ["Low", "Medium", "High"])
     priority_num = {"Low":1, "Medium":2, "High":3}[priority]
-    due_days = st.number_input("Days until due", min_value=0, value=0, step=1)
+    due_days = st.number_input("Days until due", value=0, step=1)
 
     if st.button("Add Task"):
         st.session_state.study_list.append({
@@ -123,3 +123,4 @@ elif option == "Progress":
         st.info("You haven't added any tasks yet!")
     else:
         st.write(f"You've completed {completed} out of {total} tasks.")
+
