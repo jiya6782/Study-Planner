@@ -34,10 +34,10 @@ st.title("📚 Smart Study Planner")
 
 # Sidebar menu
 st.sidebar.title("📚 Study Planner")
-st.sidebar.write("Select an action: ")
-st.sidebar.markdown("---")
 st.sidebar.info("✅ Add tasks, mark as studied, and track your progress here!")
 st.sidebar.markdown("💡 Tip: Use negative days for overdue tasks.")
+st.sidebar.write("Select an action: ")
+st.sidebar.markdown("---")
 option = st.sidebar.selectbox(
     "Menu",
     ["Add Task", "Remove Task", "View Tasks", "Mark Complete", "Next Task", "Progress"]
@@ -130,5 +130,6 @@ elif option == "Progress":
         progress_fraction = completed / total
         st.write(f"You've completed {completed} out of {total} tasks ({progress_fraction * 100:.0f}%).")
         st.progress(progress_fraction)
+
 
 
