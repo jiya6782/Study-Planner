@@ -33,6 +33,11 @@ def formatted_list(list_to_print):
 st.title("📚 Smart Study Planner")
 
 # Sidebar menu
+st.sidebar.title("📚 Study Planner")
+st.sidebar.write("Select an action: ")
+st.sidebar.markdown("---")
+st.sidebar.info("✅ Add tasks, mark as studied, and track your progress here!")
+st.sidebar.markdown("💡 Tip: Use negative days for overdue tasks.")
 option = st.sidebar.selectbox(
     "Menu",
     ["Add Task", "Remove Task", "View Tasks", "Mark Complete", "Next Task", "Progress"]
@@ -120,7 +125,10 @@ elif option == "Progress":
     total = len(st.session_state.study_list)
     completed = sum(task["done"] for task in st.session_state.study_list)
     if total == 0:
-        st.info("You haven't added any tasks yet!")
+        st.write("You haven't added any tasks yet!")
     else:
-        st.write(f"You've completed {completed} out of {total} tasks.")
+        progress_fraction = completed / total
+        st.write(f"You've completed {completed} out of {total} tasks ({progress_fraction * 100:.0f}%).")
+        st.progress(progress_fraction)
+
 
