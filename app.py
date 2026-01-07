@@ -2,7 +2,7 @@ import streamlit as st
 import json
 import os
 from datetime import date, timedelta, datetime
-#from streamlit_calendar import calendar
+from streamlit_calendar import calendar
 
 
 # Initialize the study list in session_state
@@ -167,8 +167,26 @@ elif option == "Clear Tasks":
 # ---------------TASK CALENDAR---------------------
 elif option == "Task Calendar":
     st.header("📆 Task Calendar")
+    calendar_events = [
+        {
+            "title" : task["name"],
+            "start" : task["due_date"],
+        }
+        for task in st.session_state.study_list
+    ]
     
-
-
-
-
+    calendar_options = {
+        "editable": False,
+        "selectable": False,
+        "initialView": "dayGridMonth",
+        "headerToolBar": {
+            "left": "prev,next today",
+            "center": "title",
+            "right": "dayGridMonth,dayGridWeek,dayGridDay",
+        } 
+    }
+    st.write(calendar(
+        events=calendar_events,
+        options=calendar_options,
+        key="study_calendar"
+    ))
