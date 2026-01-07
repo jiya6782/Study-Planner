@@ -1,6 +1,7 @@
 import streamlit as st
 import json
 import os
+from datetime import date, timedelta, datetime
 
 
 # Initialize the study list in session_state
@@ -24,12 +25,12 @@ def priority_word(priority):
 def formatted_list(list_to_print):
     for i, task in enumerate(list_to_print, 1):
         status = "Studied" if task["done"] else "Not studied"
-        if task["due_days"] == 0:
+        if days_until_due(task) == 0:
             due_msg = "DUE TODAY ⚠️"
-        elif task["due_days"] < 0:
+        elif days_until_due(task) < 0:
             due_msg = "OVERDUE ❗"
         else:
-            due_msg = f'Due in {task["due_days"]} days'
+            due_msg = f'Due in {days_until_due(task)} days'
 
         st.write(f"**{i}. {task['name']}**")
         st.write(f"- Priority: {priority_word(task['priority'])}")
@@ -37,6 +38,10 @@ def formatted_list(list_to_print):
         st.write(f"- Status: {status}")
         st.write("---")
 
+def days_until_due(task):
+    due = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
+    return (due - date.today()).days
+    
 # Title
 st.title("📚 Smart Study Planner")
 
@@ -57,13 +62,13 @@ if option == "Add Task":
     name = st.text_input("Assignment/Test Name")
     priority = st.selectbox("Priority", ["Low", "Medium", "High"])
     priority_num = {"Low":1, "Medium":2, "High":3}[priority]
-    due_days = st.number_input("Days until due", value=0, step=1)
+    due_date = st.date_input("What is the date it's due? ", value=date.today())
 
     if st.button("Add Task"):
         st.session_state.study_list.append({
             "name": name,
             "priority": priority_num,
-            "due_days": due_days,
+            "due_date": due_date.isoformat(),
             "done": False
         })
         st.success(f"Task '{name}' added!")
@@ -93,15 +98,22 @@ elif option == "View Tasks":
     if not st.session_state.study_list:
         st.info("Your study list is empty!")
     else:
-        sort_option = st.selectbox("Sort by", ["Unsorted", "Priority", "Due Date"])
-        if sort_option == "Priority":
-            display_list = sorted(st.session_state.study_list, key=lambda t: t["priority"], reverse=True)
-        elif sort_option == "Due Date":
-            display_list = sorted(st.session_state.study_list, key=lambda t: t["due_days"])
+        sort_option = st.selectbox("Sort by", ["Unsorted", "Priority", "Due Date", "Summary"])
+        if sort_option == "Summary":
+            st.title("📚Study Plan Summary")
+            st.write(f'Total tasks: {len(st.session_state.study_list)}')
+            st.write(f'Completed: {sum(1 for task in st.session_state.study_list if task["done"])}')
+            st.write(f'Incomplete: {sum(1 for task in st.session_state.study_list if not task["done"])}')
+            st.write(f'Due today: {sum(1 for task in st.session_state.study_list if days_until_due(task) == 0)}')
+            st.write(f'Overdue: {sum(1 for task in st.session_state.study_list if days_until_due(task) < 0)}')
         else:
-            display_list = st.session_state.study_list
-
-        formatted_list(display_list)
+            if sort_option == "Priority":
+                display_list = sorted(st.session_state.study_list, key=lambda t: t["priority"], reverse=True)
+            elif sort_option == "Due Date":
+                display_list = sorted(st.session_state.study_list, key=lambda t: t["due_date"])
+            else:
+                display_list = st.session_state.study_list
+            formatted_list(display_list)
 
 # -------------------- MARK COMPLETE --------------------
 elif option == "Mark Complete":
@@ -127,11 +139,11 @@ elif option == "Next Task":
     if not remaining:
         st.success("You have studied everything! 🎉")
     else:
-        remaining.sort(key=lambda t: (-t["priority"], t["due_days"]))
+        remaining.sort(key=lambda t: (-t["priority"], t["due_date"]))
         task = remaining[0]
         st.write(f"**You should study: {task['name']}**")
         st.write(f"- Priority: {priority_word(task['priority'])}")
-        st.write(f"- Due in {task['due_days']} days")
+        st.write(f"- Due in {days_until_due(task)} days")
 
 # -------------------- PROGRESS --------------------
 elif option == "Progress":
@@ -144,6 +156,7 @@ elif option == "Progress":
         progress_fraction = completed / total
         st.write(f"You've completed {completed} out of {total} tasks ({progress_fraction * 100:.0f}%).")
         st.progress(progress_fraction)
+
 
 
 
