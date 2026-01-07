@@ -1,8 +1,16 @@
 import streamlit as st
+import json
+import os
+
 
 # Initialize the study list in session_state
 if "study_list" not in st.session_state:
-    st.session_state.study_list = []
+    if os.path.exists("tasks.json"):
+        with open("tasks.json", mode="r") as file:
+            st.session_state.study_list = json.load(file)
+    else:
+        st.session_state.study_list = []
+    
 
 # Helper functions
 def priority_word(priority):
@@ -59,6 +67,8 @@ if option == "Add Task":
             "done": False
         })
         st.success(f"Task '{name}' added!")
+    with open("tasks.json", mode="w") as file:
+        json.dump(st.session_state.study_list, file)
 
 # -------------------- REMOVE TASK --------------------
 elif option == "Remove Task":
@@ -74,6 +84,8 @@ elif option == "Remove Task":
         if st.button("Remove Task"):
             removed = st.session_state.study_list.pop(remove_index-1)
             st.success(f"Removed task: {removed['name']}")
+        with open("tasks.json", mode="w") as file:
+            json.dump(st.session_state.study_list, file)
 
 # -------------------- VIEW TASKS --------------------
 elif option == "View Tasks":
@@ -105,6 +117,8 @@ elif option == "Mark Complete":
         if st.button("Mark as Studied"):
             st.session_state.study_list[complete_index-1]["done"] = True
             st.success(f"Marked '{st.session_state.study_list[complete_index-1]['name']}' as studied!")
+        with open("tasks.json", mode="w") as file:
+            json.dump(st.session_state.study_list, file)
 
 # -------------------- NEXT TASK --------------------
 elif option == "Next Task":
@@ -130,6 +144,7 @@ elif option == "Progress":
         progress_fraction = completed / total
         st.write(f"You've completed {completed} out of {total} tasks ({progress_fraction * 100:.0f}%).")
         st.progress(progress_fraction)
+
 
 
 
