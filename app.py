@@ -2,7 +2,7 @@ import streamlit as st
 import json
 import os
 from datetime import date, timedelta, datetime
-from streamlit_calendar import calendar
+#from streamlit_calendar import calendar
 
 
 # Initialize the study list in session_state
@@ -168,6 +168,7 @@ elif option == "Clear Tasks":
 elif option == "Task Calendar":
     st.header("📆 Task Calendar")
     
+
 
 
 
