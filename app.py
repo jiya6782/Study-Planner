@@ -53,7 +53,7 @@ st.sidebar.write("Select an action: ")
 st.sidebar.markdown("---")
 option = st.sidebar.selectbox(
     "Menu",
-    ["Add Task", "Remove Task", "View Tasks", "Mark Complete", "Next Task", "Progress"]
+    ["Add Task", "Remove Task", "View Tasks", "Mark Complete", "Next Task", "Progress", "Clear tasks"]
 )
 
 # -------------------- ADD TASK --------------------
@@ -156,6 +156,13 @@ elif option == "Progress":
         progress_fraction = completed / total
         st.write(f"You've completed {completed} out of {total} tasks ({progress_fraction * 100:.0f}%).")
         st.progress(progress_fraction)
+elif option == "Clear tasks":
+    if st.sidebar.button("Clear All Tasks"):
+        st.session_state.study_list = []
+        with open("tasks.json", "w") as file:
+            json.dump(st.session_state.study_list, file)
+        st.success("All tasks cleared!")
+
 
 
 
