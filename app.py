@@ -2,6 +2,7 @@ import streamlit as st
 import json
 import os
 from datetime import date, timedelta, datetime
+from streamlit_calendar import calendar
 
 
 # Initialize the study list in session_state
@@ -53,7 +54,7 @@ st.sidebar.write("Select an action: ")
 st.sidebar.markdown("---")
 option = st.sidebar.selectbox(
     "Menu",
-    ["Add Task", "Remove Task", "View Tasks", "Mark Complete", "Next Task", "Progress", "Clear tasks"]
+    ["Add Task", "Remove Task", "View Tasks", "Mark Complete", "Next Task", "Progress", "Task Calendar", "Clear Tasks"]
 )
 
 # -------------------- ADD TASK --------------------
@@ -156,15 +157,17 @@ elif option == "Progress":
         progress_fraction = completed / total
         st.write(f"You've completed {completed} out of {total} tasks ({progress_fraction * 100:.0f}%).")
         st.progress(progress_fraction)
-elif option == "Clear tasks":
+# ---------------CLEAR TASKS---------------------
+elif option == "Clear Tasks":
     if st.sidebar.button("Clear All Tasks"):
         st.session_state.study_list = []
         with open("tasks.json", "w") as file:
             json.dump(st.session_state.study_list, file)
         st.success("All tasks cleared!")
-
-
-
+# ---------------TASK CALENDAR---------------------
+elif option == "Task Calendar":
+    st.header("📆 Task Calendar")
+    
 
 
 
