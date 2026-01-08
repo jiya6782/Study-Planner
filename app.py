@@ -54,7 +54,7 @@ st.sidebar.write("Select an action: ")
 st.sidebar.markdown("---")
 option = st.sidebar.selectbox(
     "Menu",
-    ["Add Task", "Remove Task", "View Tasks", "Mark Complete", "Next Task", "Progress", "Task Calendar", "Clear Tasks"]
+    ["Add Task", "Edit Task", "Remove Task", "View Tasks", "Mark Complete", "Next Task", "Progress", "Task Calendar", "Clear Tasks"]
 )
 
 # -------------------- ADD TASK --------------------
@@ -185,8 +185,51 @@ elif option == "Task Calendar":
             "right": "dayGridMonth,dayGridWeek,dayGridDay",
         } 
     }
-    st.write(calendar(
+    calendar(
         events=calendar_events,
         options=calendar_options,
         key="study_calendar"
-    ))
+    )
+elif option == "Edit Task":
+    st.header("Edit a Task")
+    if not st.session_state.study_list:
+        st.info("Your study list is empty!")
+    else:
+        formatted_list(st.session_state.study_list)
+        edit_index = st.number_input(
+            f"Which task would you like to edit? (1-{len(st.session_state.study_list)})",
+            min_value=1, max_value=len(st.session_state.study_list), step=1
+        )
+        
+        task = st.session_state.study_list[edit_index - 1]
+        change_option = st.selectbox("Edit task options", ["Name", "Priority", "Due Date"])
+        if change_option == "Name":
+            new_name = st.text_input("Assignment/Test Name", value=task["name"])
+            if st.button("Save", key="save_name"):
+                if new_name.strip():
+                    task["name"] = new_name
+                    with open("tasks.json", "w") as file:
+                        json.dump(st.session_state.study_list, file)
+                st.success("Task updated!")
+        
+        elif change_option == "Priority":
+            priority_labels = ["Low", "Medium", "High"]
+            current_priority = priority_labels[task["priority"] - 1]
+            new_priority = st.selectbox("Priority", priority_labels, index=priority_labels.index(current_priority))
+            if st.button("Save", key="save_priority"):
+                task["priority"] = priority_labels.index(new_priority) + 1
+                with open("tasks.json", "w") as file:
+                    json.dump(st.session_state.study_list, file)
+                st.success("Task updated!")
+
+        elif change_option == "Due Date":
+            new_due_date = st.date_input("What is the date it's due? ", value=datetime.strptime(task["due_date"], "%Y-%m-%d").date())
+            if st.button("Save", key="save_due"):
+                task["due_date"] = new_due_date.isoformat()
+                with open("tasks.json", "w") as file:
+                    json.dump(st.session_state.study_list, file)
+                st.success("Task updated!")
+
+
+    
+
