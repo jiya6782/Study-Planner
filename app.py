@@ -48,8 +48,8 @@ st.title("📚 Smart Study Planner")
 
 # Sidebar menu
 st.sidebar.title("📚 Study Planner")
-st.sidebar.info("✅ Add tasks, mark as studied, and track your progress here!")
-st.sidebar.markdown("💡 Tip: Use negative days for overdue tasks.")
+st.sidebar.info("✅ Add assignments, mark as studied, and track your progress here!")
+st.sidebar.markdown("💡 Tip: Use negative days for overdue assignments.")
 st.sidebar.write("Select an action: ")
 st.sidebar.markdown("---")
 option = st.sidebar.selectbox(
@@ -232,5 +232,6 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
