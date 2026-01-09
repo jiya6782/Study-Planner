@@ -10,9 +10,13 @@ if "study_list" not in st.session_state:
     if os.path.exists("tasks.json"):
         with open("tasks.json", mode="r") as file:
             st.session_state.study_list = json.load(file)
+            
     else:
         st.session_state.study_list = []
     
+for task in st.session_state.study_list:
+    if "reminded" not in task:
+        task["reminded"] = False
 
 # Helper functions
 def priority_word(priority):
@@ -42,7 +46,14 @@ def formatted_list(list_to_print):
 def days_until_due(task):
     due = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
     return (due - date.today()).days
-    
+
+for task in st.session_state.study_list:
+    if (not task["reminded"]) and (days_until_due(task) == 1) and (not task["done"]):
+        st.toast(f'📧 Reminder sent for {task["name"]}')
+        task["reminded"] = True
+        with open("tasks.json", "w") as file:
+            json.dump(st.session_state.study_list, file)
+
 # Title
 st.title("📚 Smart Study Planner")
 
@@ -70,7 +81,8 @@ if option == "Add Assignment":
             "name": name,
             "priority": priority_num,
             "due_date": due_date.isoformat(),
-            "done": False
+            "done": False,
+            "reminded": False
         })
         st.success(f"Task '{name}' added!")
     with open("tasks.json", mode="w") as file:
@@ -232,6 +244,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
