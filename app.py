@@ -7,6 +7,15 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+if "user_name" not in st.session_state.study_list:
+    st.session_state.user_name = ""
+
+if not st.session_state.user_name:
+    st.session_state.user_name = st.text_input("What's your name?")
+    if st.session_state.user_name:
+        st.success(f"Welcome, {st.session_state.user_name}!")
+        st.experimental_rerun()
+
 # Initialize the study list in session_state
 if "study_list" not in st.session_state:
     if os.path.exists("tasks.json"):
@@ -303,6 +312,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
