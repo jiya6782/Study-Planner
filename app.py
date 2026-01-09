@@ -12,9 +12,10 @@ if "user_name" not in st.session_state:
 
 if not st.session_state.user_name:
     st.session_state.user_name = st.text_input("What's your name?")
-    if st.session_state.user_name:
-        st.success(f"Welcome, {st.session_state.user_name}!")
-        st.experimental_rerun()
+
+# Show welcome if name exists
+if st.session_state.user_name:
+    st.subheader(f"📚 Welcome, {st.session_state.user_name}!")
 
 # Initialize the study list in session_state
 if "study_list" not in st.session_state:
@@ -312,6 +313,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
