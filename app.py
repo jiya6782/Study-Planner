@@ -254,7 +254,7 @@ elif option == "Edit Assignment":
         )
         
         task = st.session_state.study_list[edit_index - 1]
-        change_option = st.selectbox("Edit assignment options", ["Name", "Priority", "Due Date"])
+        change_option = st.selectbox("Edit assignment options", ["Name", "Priority", "Due Date", "Email"])
         if change_option == "Name":
             new_name = st.text_input("Assignment/Test Name", value=task["name"])
             if st.button("Save", key="save_name"):
@@ -281,9 +281,27 @@ elif option == "Edit Assignment":
                 with open("tasks.json", "w") as file:
                     json.dump(st.session_state.study_list, file)
                 st.success("Assignment updated!")
+                
+        elif change_option == "Email":
+            current_email = task.get("user_email") or ""
+            new_email = st.text_input("Your Email for reminders (leave blank if you don't want reminders)")
+            new_email = new_email.strip()
+            if new_email == "":
+                new_email = None
+            if st.button("Save", key="save_email"):
+                if new_email != task.get("user_email"):
+                    task["user_email"] = new_email
+                    task["reminded"] = False
+                with open("tasks.json", "w") as file:
+                    json.dump(st.session_state.study_list, file)
+                st.success("Email updated!")
+            else:
+                st.info("Email unchanged")
+            
 
 
     
+
 
 
 
