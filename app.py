@@ -43,6 +43,8 @@ def formatted_list(list_to_print):
         st.write(f"- Priority: {priority_word(task['priority'])}")
         st.write(f"- {due_msg}")
         st.write(f"- Status: {status}")
+        if task.get("user_email"):
+            st.write(f'Email: {task["user_email"]}')
         st.write("---")
 
 def days_until_due(task):
@@ -301,6 +303,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
