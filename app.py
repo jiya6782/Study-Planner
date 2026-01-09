@@ -5,7 +5,7 @@ from datetime import date, timedelta, datetime
 from streamlit_calendar import calendar
 import smtplib
 from email.mime.text import MIMEText
-from emiail.mime.multipart import MIMEMultipart
+from email.mime.multipart import MIMEMultipart
 
 # Initialize the study list in session_state
 if "study_list" not in st.session_state:
@@ -284,6 +284,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
