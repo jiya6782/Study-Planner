@@ -7,7 +7,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-if "user_name" not in st.session_state.study_list:
+if "user_name" not in st.session_state:
     st.session_state.user_name = ""
 
 if not st.session_state.user_name:
@@ -312,6 +312,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
