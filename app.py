@@ -3,7 +3,9 @@ import json
 import os
 from datetime import date, timedelta, datetime
 from streamlit_calendar import calendar
-
+import smtplib
+from email.mime.text import MIMEText
+from emiail.mime.multipart import MIMEMultipart
 
 # Initialize the study list in session_state
 if "study_list" not in st.session_state:
@@ -47,12 +49,45 @@ def days_until_due(task):
     due = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
     return (due - date.today()).days
 
+def send_email_reminder(to_email, task_name, due_date):
+    sender_email = st.secrets["email"]["user"]
+    sender_password = st.secrets["email"]["password"]
+    msg = MIMEMultipart()
+    msg["From"] = sender_email
+    msg["To"] = to_email
+    msg["Subject"] = f'Reminder: {task_name} due soon!'
+    body = f'''
+Hi!
+This is a reminder that your assignment:
+{task_name}
+Due date: {due_date}
+
+Good luck studying! 💪
+    '''
+    msg.attach(MIMEText(body, "plain"))
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.sendmail(sender_email, to_email, msg.as_string())
+        return True
+    except Exception as e:
+        st.error(f'Email failed: {e}')
+        return False
+
 for task in st.session_state.study_list:
+    email = task.get("user_email")
+    if not email:
+        continue
+        
     if (not task["reminded"]) and (days_until_due(task) == 1) and (not task["done"]):
-        st.toast(f'📧 Reminder sent for {task["name"]}')
-        task["reminded"] = True
-        with open("tasks.json", "w") as file:
-            json.dump(st.session_state.study_list, file)
+        email_sent = send_email_reminder(task["user_email"], task["name"], task["due_date"])
+
+        if email_sent:
+            st.toast(f'📧 Email reminder sent for {task["name"]}')
+            task["reminded"] = True
+            with open("tasks.json", "w") as file:
+                json.dump(st.session_state.study_list, file)
 
 # Title
 st.title("📚 Smart Study Planner")
@@ -75,6 +110,10 @@ if option == "Add Assignment":
     priority = st.selectbox("Priority", ["Low", "Medium", "High"])
     priority_num = {"Low":1, "Medium":2, "High":3}[priority]
     due_date = st.date_input("What is the date it's due? ", value=date.today())
+    user_email = st.text_input("Your Email for reminders (leave blank if you don't want reminders)")
+    user_email = user_email.strip()
+    if user_email == "":
+        user_email = None
 
     if st.button("Add Assignment"):
         st.session_state.study_list.append({
@@ -82,7 +121,8 @@ if option == "Add Assignment":
             "priority": priority_num,
             "due_date": due_date.isoformat(),
             "done": False,
-            "reminded": False
+            "reminded": False,
+            "user_email": user_email
         })
         st.success(f"Task '{name}' added!")
     with open("tasks.json", mode="w") as file:
@@ -244,6 +284,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
