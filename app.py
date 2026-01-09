@@ -54,18 +54,18 @@ st.sidebar.write("Select an action: ")
 st.sidebar.markdown("---")
 option = st.sidebar.selectbox(
     "Menu",
-    ["Add Task", "Edit Task", "Remove Task", "View Tasks", "Mark Complete", "Next Task", "Progress", "Task Calendar", "Clear Tasks"]
+    ["Add Assignment", "Edit Assignment", "Remove Assignment", "View Assignments", "Mark Complete", "Next Assignment", "Progress", "Assignment Calendar", "Clear Assignments"]
 )
 
 # -------------------- ADD TASK --------------------
-if option == "Add Task":
-    st.header("Add a Study Task")
+if option == "Add Assignment":
+    st.header("Add a Study Assignment")
     name = st.text_input("Assignment/Test Name")
     priority = st.selectbox("Priority", ["Low", "Medium", "High"])
     priority_num = {"Low":1, "Medium":2, "High":3}[priority]
     due_date = st.date_input("What is the date it's due? ", value=date.today())
 
-    if st.button("Add Task"):
+    if st.button("Add Assignment"):
         st.session_state.study_list.append({
             "name": name,
             "priority": priority_num,
@@ -77,8 +77,8 @@ if option == "Add Task":
         json.dump(st.session_state.study_list, file)
 
 # -------------------- REMOVE TASK --------------------
-elif option == "Remove Task":
-    st.header("Remove a Task")
+elif option == "Remove Assignment":
+    st.header("Remove a Assignment")
     if not st.session_state.study_list:
         st.info("Your study list is empty!")
     else:
@@ -87,14 +87,14 @@ elif option == "Remove Task":
             f"Which task to remove? (1-{len(st.session_state.study_list)})",
             min_value=1, max_value=len(st.session_state.study_list), step=1
         )
-        if st.button("Remove Task"):
+        if st.button("Remove Assignment"):
             removed = st.session_state.study_list.pop(remove_index-1)
-            st.success(f"Removed task: {removed['name']}")
+            st.success(f"Removed Assignment: {removed['name']}")
         with open("tasks.json", mode="w") as file:
             json.dump(st.session_state.study_list, file)
 
 # -------------------- VIEW TASKS --------------------
-elif option == "View Tasks":
+elif option == "View Assignments":
     st.header("Your Study Plan")
     if not st.session_state.study_list:
         st.info("Your study list is empty!")
@@ -102,7 +102,7 @@ elif option == "View Tasks":
         sort_option = st.selectbox("Sort by", ["Unsorted", "Priority", "Due Date", "Summary"])
         if sort_option == "Summary":
             st.title("📚Study Plan Summary")
-            st.write(f'Total tasks: {len(st.session_state.study_list)}')
+            st.write(f'Total Assignments: {len(st.session_state.study_list)}')
             st.write(f'Completed: {sum(1 for task in st.session_state.study_list if task["done"])}')
             st.write(f'Incomplete: {sum(1 for task in st.session_state.study_list if not task["done"])}')
             st.write(f'Due today: {sum(1 for task in st.session_state.study_list if days_until_due(task) == 0)}')
@@ -124,7 +124,7 @@ elif option == "Mark Complete":
     else:
         formatted_list(st.session_state.study_list)
         complete_index = st.number_input(
-            f"Which task have you studied? (1-{len(st.session_state.study_list)})",
+            f"Which assignment have you studied? (1-{len(st.session_state.study_list)})",
             min_value=1, max_value=len(st.session_state.study_list), step=1
         )
         if st.button("Mark as Studied"):
@@ -134,8 +134,8 @@ elif option == "Mark Complete":
             json.dump(st.session_state.study_list, file)
 
 # -------------------- NEXT TASK --------------------
-elif option == "Next Task":
-    st.header("Next Task to Study")
+elif option == "Next Assignment":
+    st.header("Next Assignment to Study")
     remaining = [task for task in st.session_state.study_list if not task["done"]]
     if not remaining:
         st.success("You have studied everything! 🎉")
@@ -158,15 +158,15 @@ elif option == "Progress":
         st.write(f"You've completed {completed} out of {total} tasks ({progress_fraction * 100:.0f}%).")
         st.progress(progress_fraction)
 # ---------------CLEAR TASKS---------------------
-elif option == "Clear Tasks":
-    if st.sidebar.button("Clear All Tasks"):
+elif option == "Clear Assignments":
+    if st.sidebar.button("Clear All Assignments"):
         st.session_state.study_list = []
         with open("tasks.json", "w") as file:
             json.dump(st.session_state.study_list, file)
-        st.success("All tasks cleared!")
+        st.success("All Assignments cleared!")
 # ---------------TASK CALENDAR---------------------
-elif option == "Task Calendar":
-    st.header("📆 Task Calendar")
+elif option == "Assignment Calendar":
+    st.header("📆 Assignment Calendar")
     calendar_events = [
         {
             "title" : task["name"],
@@ -190,19 +190,19 @@ elif option == "Task Calendar":
         options=calendar_options,
         key="study_calendar"
     )
-elif option == "Edit Task":
-    st.header("Edit a Task")
+elif option == "Edit Assignment":
+    st.header("Edit a Assignment")
     if not st.session_state.study_list:
         st.info("Your study list is empty!")
     else:
         formatted_list(st.session_state.study_list)
         edit_index = st.number_input(
-            f"Which task would you like to edit? (1-{len(st.session_state.study_list)})",
+            f"Which assignment would you like to edit? (1-{len(st.session_state.study_list)})",
             min_value=1, max_value=len(st.session_state.study_list), step=1
         )
         
         task = st.session_state.study_list[edit_index - 1]
-        change_option = st.selectbox("Edit task options", ["Name", "Priority", "Due Date"])
+        change_option = st.selectbox("Edit assignment options", ["Name", "Priority", "Due Date"])
         if change_option == "Name":
             new_name = st.text_input("Assignment/Test Name", value=task["name"])
             if st.button("Save", key="save_name"):
@@ -210,7 +210,7 @@ elif option == "Edit Task":
                     task["name"] = new_name
                     with open("tasks.json", "w") as file:
                         json.dump(st.session_state.study_list, file)
-                st.success("Task updated!")
+                st.success("Assignment updated!")
         
         elif change_option == "Priority":
             priority_labels = ["Low", "Medium", "High"]
@@ -220,7 +220,7 @@ elif option == "Edit Task":
                 task["priority"] = priority_labels.index(new_priority) + 1
                 with open("tasks.json", "w") as file:
                     json.dump(st.session_state.study_list, file)
-                st.success("Task updated!")
+                st.success("Assignment updated!")
 
         elif change_option == "Due Date":
             new_due_date = st.date_input("What is the date it's due? ", value=datetime.strptime(task["due_date"], "%Y-%m-%d").date())
@@ -228,8 +228,9 @@ elif option == "Edit Task":
                 task["due_date"] = new_due_date.isoformat()
                 with open("tasks.json", "w") as file:
                     json.dump(st.session_state.study_list, file)
-                st.success("Task updated!")
+                st.success("Assignment updated!")
 
 
     
+
 
