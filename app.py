@@ -55,7 +55,7 @@ def send_email_reminder(to_email, task_name, due_date):
     sender_email = st.secrets["email"]["user"]
     sender_password = st.secrets["email"]["password"]
     msg = MIMEMultipart()
-    msg["From"] = sender_email
+    msg["From"] = "📚 Study Plan Reminder <{}>".format(sender_email)
     msg["To"] = to_email
     msg["Subject"] = f'Reminder: {task_name} due soon!'
     body = f'''
@@ -303,6 +303,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
