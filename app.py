@@ -15,7 +15,7 @@ if not st.session_state.user_name:
 
 # Show welcome if name exists
 if st.session_state.user_name:
-    st.subheader(f"📚 Welcome, {st.session_state.user_name}!")
+    st.subheader(f"Welcome, {st.session_state.user_name}!")
 
 # Initialize the study list in session_state
 if "study_list" not in st.session_state:
@@ -313,6 +313,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
