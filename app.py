@@ -149,7 +149,7 @@ elif option == "View Assignments":
                 display_list = sorted(st.session_state.study_list, key=lambda t: t["due_date"])
             else:
                 display_list = st.session_state.study_list
-            formatted_list(display_list)
+            helper.formatted_list(display_list)
 
 # 4. Mark Complete
 elif option == "Mark Complete":
@@ -157,7 +157,7 @@ elif option == "Mark Complete":
     if not st.session_state.study_list:
         st.info("Your study list is empty!")
     else:
-        formatted_list(st.session_state.study_list)
+        helper.formatted_list(st.session_state.study_list)
         complete_index = st.number_input(
             f"Which assignment have you studied? (1-{len(st.session_state.study_list)})",
             min_value=1, max_value=len(st.session_state.study_list), step=1
@@ -242,7 +242,7 @@ elif option == "Edit Assignment":
     if not st.session_state.study_list:
         st.info("Your study list is empty!")
     else:
-        formatted_list(st.session_state.study_list)
+        helper.formatted_list(st.session_state.study_list)
         edit_index = st.number_input(
             f"Which assignment would you like to edit? (1-{len(st.session_state.study_list)})",
             min_value=1, max_value=len(st.session_state.study_list), step=1
@@ -322,6 +322,7 @@ elif option == "Edit Assignment":
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
 
     
+
 
 
 
