@@ -1,4 +1,5 @@
-# Imports the necessary libraries
+# -------------------- IMPORTS AND SETUP --------------------
+# Imports the necessary libraries for Streamlit, JSON handling, calendar display, email sending, and time zone management
 import streamlit as st
 import json
 import os
@@ -9,14 +10,17 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import pytz
 
-# Sets the time zone to ours
+# Set local timezone
 LOCAL_TZ = pytz.timezone("America/New_York")
 
 
+# -------------------- SESSION STATE INITIALIZATION --------------------
+# Initialize study list and user name in session state if not already present
 if "study_list" not in st.session_state:
     st.session_state.study_list = []
     st.session_state.user_name = ""
 
+    # Load existing tasks from tasks.json if it exists
     if os.path.exists("tasks.json"):
         try:
             with open("tasks.json", "r") as file:
@@ -24,17 +28,22 @@ if "study_list" not in st.session_state:
                 st.session_state.study_list = data.get("study_list", [])
                 st.session_state.user_name = data.get("user_name", "")
         except json.JSONDecodeError:
-            # File exists but is corrupted or empty
+            # If the file exists but is corrupted, reset data
             st.warning("tasks.json was corrupted. Resetting data.")
             st.session_state.study_list = []
             st.session_state.user_name = ""
     
+# Ensure all tasks have a 'reminded' key
 for task in st.session_state.study_list:
     if "reminded" not in task:
         task["reminded"] = False
 
-# Helper functions
+
+# -------------------- HELPER FUNCTIONS --------------------
 def priority_word(priority):
+    """
+    Converts numeric priority (1-3) to a string representation ("Low", "Medium", "High").
+    """
     if priority == 3:
         return "High"
     elif priority == 2:
@@ -42,7 +51,26 @@ def priority_word(priority):
     else:
         return "Low"
 
+
+def days_until_due(task):
+    """
+    Returns the number of days until a task is due.
+    Positive if due in future, 0 if due today, negative if overdue.
+    """
+    due = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
+    today = datetime.now(LOCAL_TZ).date()
+    return (due - today).days
+
+
 def formatted_list(list_to_print):
+    """
+    Displays a formatted list of tasks with their:
+    - Name
+    - Priority
+    - Due date status (due today, overdue, or days left)
+    - Completion status
+    - Associated email (if any)
+    """
     for i, task in enumerate(list_to_print, 1):
         status = "Studied" if task["done"] else "Not studied"
         if days_until_due(task) == 0:
@@ -60,12 +88,13 @@ def formatted_list(list_to_print):
             st.write(f'Email: {task["user_email"]}')
         st.write("---")
 
-def days_until_due(task):
-    due = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
-    today = datetime.now(LOCAL_TZ).date()
-    return (due - today).days
 
 def send_email_reminder(to_email, task_name, due_date):
+    """
+    Sends an email reminder for a task due tomorrow.
+    Uses email credentials stored in Streamlit secrets.
+    Returns True if email sent successfully, False otherwise.
+    """
     sender_email = st.secrets["email"]["user"]
     sender_password = st.secrets["email"]["password"]
     msg = MIMEMultipart()
@@ -91,6 +120,9 @@ Good luck studying! 💪
         st.error(f'Email failed: {e}')
         return False
 
+
+# -------------------- EMAIL REMINDERS --------------------
+# Check all tasks for reminders due tomorrow and send emails if needed
 for task in st.session_state.study_list:
     email = task.get("user_email")
     if not email:
@@ -102,6 +134,7 @@ for task in st.session_state.study_list:
         if email_sent:
             st.toast(f'📧 Email reminder sent for {task["name"]}')
             task["reminded"] = True
+            # Save updated state after sending email
             with open("tasks.json", "w") as file:
                 json.dump({
                     "user_name": st.session_state.user_name,
@@ -109,9 +142,10 @@ for task in st.session_state.study_list:
                 }, file)
 
 
-# Title
+# -------------------- STREAMLIT LAYOUT --------------------
 st.title("📚 Smart Study Planner")
 
+# Ask for user's name if not set
 if "user_name" not in st.session_state:
     st.session_state.user_name = ""
 
@@ -119,23 +153,19 @@ if not st.session_state.user_name:
     user_name = st.text_input("What's your name?", key="name_input")
     if user_name and user_name.strip():
         st.session_state.user_name = user_name.strip()
-        save_data = {
-            "user_name": st.session_state.user_name,
-            "study_list": st.session_state.study_list
-        }
+        # Save initial data to JSON
         with open("tasks.json", "w") as file:
             json.dump({
                 "user_name": st.session_state.user_name,
                 "study_list": st.session_state.study_list
             }, file)
-        
 
-# Show welcome if name exists
+# Display welcome message if name exists
 if st.session_state.user_name:
     st.subheader(f"Welcome, {st.session_state.user_name}!")
-    
 
-# Sidebar menu
+
+# -------------------- SIDEBAR MENU --------------------
 st.sidebar.title("📚 Study Planner")
 st.sidebar.info("✅ Add assignments, mark as studied, and track your progress here!")
 st.sidebar.markdown("💡 Tip: Use negative days for overdue assignments.")
@@ -146,19 +176,24 @@ option = st.sidebar.selectbox(
     ["Add Assignment", "Edit Assignment", "Remove Assignment", "View Assignments", "Mark Complete", "Next Assignment", "Progress", "Assignment Calendar", "Clear Assignments"]
 )
 
-# -------------------- ADD TASK --------------------
+
+# -------------------- MENU OPTIONS --------------------
+# 1. Add Assignment
 if option == "Add Assignment":
     st.header("Add a Study Assignment")
+    # Asks user for information about the task (Name, priority, due-date and an email option)
     name = st.text_input("Assignment/Test Name")
     priority = st.selectbox("Priority", ["Low", "Medium", "High"])
     priority_num = {"Low":1, "Medium":2, "High":3}[priority]
     due_date = st.date_input("What is the date it's due? ", value=datetime.now(LOCAL_TZ).date())
     user_email = st.text_input("Your Email for reminders (leave blank if you don't want reminders)")
     user_email = user_email.strip()
+    # If email input is left blank, then they don't want a reminder sent to them
     if user_email == "":
         user_email = None
 
     if st.button("Add Assignment"):
+        # Append new assignment to study list and save to JSON
         st.session_state.study_list.append({
             "name": name,
             "priority": priority_num,
@@ -167,20 +202,23 @@ if option == "Add Assignment":
             "reminded": False,
             "user_email": user_email
         })
-        st.success(f"Task '{name}' added!")
+        st.success(f"Assignment '{name}' added!")
+        # Saves the assignment to the json file
         with open("tasks.json", "w") as file:
             json.dump({
                 "user_name": st.session_state.user_name,
                 "study_list": st.session_state.study_list
             }, file)
 
-# -------------------- REMOVE TASK --------------------
+# 2. Remove Assignment
 elif option == "Remove Assignment":
     st.header("Remove a Assignment")
+    # Checks if there aren't items in the study list
     if not st.session_state.study_list:
         st.info("Your study list is empty!")
     else:
         formatted_list(st.session_state.study_list)
+        # Retrieves index for removal
         remove_index = st.number_input(
             f"Which task to remove? (1-{len(st.session_state.study_list)})",
             min_value=1, max_value=len(st.session_state.study_list), step=1
@@ -188,13 +226,14 @@ elif option == "Remove Assignment":
         if st.button("Remove Assignment"):
             removed = st.session_state.study_list.pop(remove_index-1)
             st.success(f"Removed Assignment: {removed['name']}")
+            # Save updated state to JSON
             with open("tasks.json", "w") as file:
                 json.dump({
                     "user_name": st.session_state.user_name,
                     "study_list": st.session_state.study_list
                 }, file)
 
-# -------------------- VIEW TASKS --------------------
+# 3. View Assignments
 elif option == "View Assignments":
     st.header("Your Study Plan")
     if not st.session_state.study_list:
@@ -202,6 +241,7 @@ elif option == "View Assignments":
     else:
         sort_option = st.selectbox("Sort by", ["Unsorted", "Priority", "Due Date", "Summary"])
         if sort_option == "Summary":
+            # Show summary stats
             st.title("📚Study Plan Summary")
             st.write(f'Total Assignments: {len(st.session_state.study_list)}')
             st.write(f'Completed: {sum(1 for task in st.session_state.study_list if task["done"])}')
@@ -209,6 +249,7 @@ elif option == "View Assignments":
             st.write(f'Due today: {sum(1 for task in st.session_state.study_list if days_until_due(task) == 0)}')
             st.write(f'Overdue: {sum(1 for task in st.session_state.study_list if days_until_due(task) < 0)}')
         else:
+            # Display sorted list
             if sort_option == "Priority":
                 display_list = sorted(st.session_state.study_list, key=lambda t: t["priority"], reverse=True)
             elif sort_option == "Due Date":
@@ -217,7 +258,7 @@ elif option == "View Assignments":
                 display_list = st.session_state.study_list
             formatted_list(display_list)
 
-# -------------------- MARK COMPLETE --------------------
+# 4. Mark Complete
 elif option == "Mark Complete":
     st.header("Mark a Task as Studied")
     if not st.session_state.study_list:
@@ -229,6 +270,7 @@ elif option == "Mark Complete":
             min_value=1, max_value=len(st.session_state.study_list), step=1
         )
         if st.button("Mark as Studied"):
+            # Update completion status and save
             st.session_state.study_list[complete_index-1]["done"] = True
             st.success(f"Marked '{st.session_state.study_list[complete_index-1]['name']}' as studied!")
             with open("tasks.json", "w") as file:
@@ -237,20 +279,21 @@ elif option == "Mark Complete":
                     "study_list": st.session_state.study_list
                 }, file)
 
-# -------------------- NEXT TASK --------------------
+# 5. Next Assignment
 elif option == "Next Assignment":
     st.header("Next Assignment to Study")
     remaining = [task for task in st.session_state.study_list if not task["done"]]
     if not remaining:
         st.success("You have studied everything! 🎉")
     else:
+        # Decides task based on highest priority and closest due date
         remaining.sort(key=lambda t: (-t["priority"], t["due_date"]))
         task = remaining[0]
         st.write(f"**You should study: {task['name']}**")
         st.write(f"- Priority: {priority_word(task['priority'])}")
         st.write(f"- Due in {days_until_due(task)} days")
 
-# -------------------- PROGRESS --------------------
+# 6. Progress
 elif option == "Progress":
     st.header("Study Progress")
     total = len(st.session_state.study_list)
@@ -261,7 +304,8 @@ elif option == "Progress":
         progress_fraction = completed / total
         st.write(f"You've completed {completed} out of {total} tasks ({progress_fraction * 100:.0f}%).")
         st.progress(progress_fraction)
-# ---------------CLEAR TASKS---------------------
+
+# 7. Clear Assignments
 elif option == "Clear Assignments":
     if st.sidebar.button("Clear All Assignments"):
         st.session_state.study_list = []
@@ -271,7 +315,8 @@ elif option == "Clear Assignments":
                 "study_list": st.session_state.study_list
             }, file)
         st.success("All Assignments cleared!")
-# ---------------TASK CALENDAR---------------------
+
+# 8. Assignment Calendar
 elif option == "Assignment Calendar":
     st.header("📆 Assignment Calendar")
     calendar_events = [
@@ -297,6 +342,8 @@ elif option == "Assignment Calendar":
         options=calendar_options,
         key="study_calendar"
     )
+
+# 9. Edit Assignment
 elif option == "Edit Assignment":
     st.header("Edit a Assignment")
     if not st.session_state.study_list:
@@ -310,6 +357,8 @@ elif option == "Edit Assignment":
         
         task = st.session_state.study_list[edit_index - 1]
         change_option = st.selectbox("Edit assignment options", ["Name", "Priority", "Due Date", "Email"])
+        
+        # Edit Name
         if change_option == "Name":
             new_name = st.text_input("Assignment/Test Name", value=task["name"])
             if st.button("Save", key="save_name"):
@@ -321,7 +370,8 @@ elif option == "Edit Assignment":
                             "study_list": st.session_state.study_list
                         }, file)
                 st.success("Assignment updated!")
-        
+
+        # Edit Priority
         elif change_option == "Priority":
             priority_labels = ["Low", "Medium", "High"]
             current_priority = priority_labels[task["priority"] - 1]
@@ -335,6 +385,7 @@ elif option == "Edit Assignment":
                         }, file)
                 st.success("Assignment updated!")
 
+        # Edit Due Date
         elif change_option == "Due Date":
             new_due_date = st.date_input("What is the date it's due? ", value=datetime.strptime(task["due_date"], "%Y-%m-%d").date())
             if st.button("Save", key="save_due"):
@@ -345,7 +396,8 @@ elif option == "Edit Assignment":
                             "study_list": st.session_state.study_list
                         }, file)
                 st.success("Assignment updated!")
-                
+        
+        # Edit Email
         elif change_option == "Email":
             current_email = task.get("user_email") or ""
             new_email = st.text_input("Your Email for reminders (leave blank if you don't want reminders)")
@@ -364,7 +416,7 @@ elif option == "Edit Assignment":
                 st.success("Email updated!")
             else:
                 st.info("Email unchanged")
-            
+
 
 """
 These are my citations: 
@@ -377,6 +429,7 @@ Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit
 im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
 """
     
+
 
 
 
