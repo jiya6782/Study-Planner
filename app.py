@@ -102,8 +102,8 @@ if "user_name" not in st.session_state:
     st.session_state.user_name = ""
 
 if not st.session_state.user_name:
-    user_name = st.text_input("What's your name?")
-    if user_name.strip():
+    user_name = st.text_input("What's your name?", key="name_input")
+    if user_name and user_name.strip():
         st.session_state.user_name = user_name.strip()
         save_data = {
             "user_name": st.session_state.user_name,
@@ -151,8 +151,11 @@ if option == "Add Assignment":
             "user_email": user_email
         })
         st.success(f"Task '{name}' added!")
-    with open("tasks.json", mode="w") as file:
-        json.dump(st.session_state.study_list, file)
+    with open("tasks.json", "w") as file:
+        json.dump({
+            "user_name": st.session_state.user_name,
+            "study_list": st.session_state.study_list
+        }, file)
 
 # -------------------- REMOVE TASK --------------------
 elif option == "Remove Assignment":
@@ -168,8 +171,11 @@ elif option == "Remove Assignment":
         if st.button("Remove Assignment"):
             removed = st.session_state.study_list.pop(remove_index-1)
             st.success(f"Removed Assignment: {removed['name']}")
-        with open("tasks.json", mode="w") as file:
-            json.dump(st.session_state.study_list, file)
+        with open("tasks.json", "w") as file:
+            json.dump({
+                "user_name": st.session_state.user_name,
+                "study_list": st.session_state.study_list
+            }, file)
 
 # -------------------- VIEW TASKS --------------------
 elif option == "View Assignments":
@@ -208,8 +214,11 @@ elif option == "Mark Complete":
         if st.button("Mark as Studied"):
             st.session_state.study_list[complete_index-1]["done"] = True
             st.success(f"Marked '{st.session_state.study_list[complete_index-1]['name']}' as studied!")
-        with open("tasks.json", mode="w") as file:
-            json.dump(st.session_state.study_list, file)
+        with open("tasks.json", "w") as file:
+            json.dump({
+                "user_name": st.session_state.user_name,
+                "study_list": st.session_state.study_list
+            }, file)
 
 # -------------------- NEXT TASK --------------------
 elif option == "Next Assignment":
@@ -240,7 +249,10 @@ elif option == "Clear Assignments":
     if st.sidebar.button("Clear All Assignments"):
         st.session_state.study_list = []
         with open("tasks.json", "w") as file:
-            json.dump(st.session_state.study_list, file)
+            json.dump({
+                "user_name": st.session_state.user_name,
+                "study_list": st.session_state.study_list
+            }, file)
         st.success("All Assignments cleared!")
 # ---------------TASK CALENDAR---------------------
 elif option == "Assignment Calendar":
@@ -287,7 +299,10 @@ elif option == "Edit Assignment":
                 if new_name.strip():
                     task["name"] = new_name
                     with open("tasks.json", "w") as file:
-                        json.dump(st.session_state.study_list, file)
+                        json.dump({
+                            "user_name": st.session_state.user_name,
+                            "study_list": st.session_state.study_list
+                        }, file)
                 st.success("Assignment updated!")
         
         elif change_option == "Priority":
@@ -297,7 +312,10 @@ elif option == "Edit Assignment":
             if st.button("Save", key="save_priority"):
                 task["priority"] = priority_labels.index(new_priority) + 1
                 with open("tasks.json", "w") as file:
-                    json.dump(st.session_state.study_list, file)
+                        json.dump({
+                            "user_name": st.session_state.user_name,
+                            "study_list": st.session_state.study_list
+                        }, file)
                 st.success("Assignment updated!")
 
         elif change_option == "Due Date":
@@ -305,7 +323,10 @@ elif option == "Edit Assignment":
             if st.button("Save", key="save_due"):
                 task["due_date"] = new_due_date.isoformat()
                 with open("tasks.json", "w") as file:
-                    json.dump(st.session_state.study_list, file)
+                        json.dump({
+                            "user_name": st.session_state.user_name,
+                            "study_list": st.session_state.study_list
+                        }, file)
                 st.success("Assignment updated!")
                 
         elif change_option == "Email":
@@ -319,7 +340,10 @@ elif option == "Edit Assignment":
                     task["user_email"] = new_email
                     task["reminded"] = False
                 with open("tasks.json", "w") as file:
-                    json.dump(st.session_state.study_list, file)
+                        json.dump({
+                            "user_name": st.session_state.user_name,
+                            "study_list": st.session_state.study_list
+                        }, file)
                 st.success("Email updated!")
             else:
                 st.info("Email unchanged")
@@ -327,6 +351,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
