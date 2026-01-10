@@ -12,7 +12,7 @@ import pytz
 # Set local timezone
 LOCAL_TZ = pytz.timezone("America/New_York")
 
-
+"""
 # -------------------- SESSION STATE INITIALIZATION --------------------
 # Initialize study list and user name in session state if not already present
 if "study_list" not in st.session_state:
@@ -120,7 +120,7 @@ Good luck studying! 💪
     except Exception as e:
         st.error(f'Email failed: {e}')
         return False
-
+"""
 
 # -------------------- EMAIL REMINDERS --------------------
 # Check all tasks for reminders due tomorrow and send emails if needed
@@ -430,6 +430,7 @@ elif option == "Edit Assignment":
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
 
     
+
 
 
 
