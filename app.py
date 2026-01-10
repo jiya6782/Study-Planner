@@ -19,7 +19,7 @@ if not st.session_state.user_name:
     user_name = st.text_input("What's your name?", key="name_input")
     if user_name and user_name.strip():
         st.session_state.user_name = user_name.strip()
-        helper.save_data()
+        save_data()
         
 
 # Show welcome if name exists
@@ -256,6 +256,7 @@ elif option == "Edit Assignment":
                 st.success("Email updated!")
             else:
                 st.info("Email unchanged")
+
 
 
 
