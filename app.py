@@ -350,27 +350,4 @@ elif option == "Edit Assignment":
                 st.success("Email updated!")
             else:
                 st.info("Email unchanged")
-            
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
