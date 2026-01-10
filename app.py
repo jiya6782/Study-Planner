@@ -7,7 +7,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import pytz
-import helper.py
+import helper
 
 LOCAL_TZ = pytz.timezone("America/New_York")
 
@@ -267,6 +267,7 @@ elif option == "Edit Assignment":
                 st.success("Email updated!")
             else:
                 st.info("Email unchanged")
+
 
 
 
