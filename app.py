@@ -21,7 +21,7 @@ for task in st.session_state.study_list:
     if not email:
         continue
         
-    if (not task["reminded"]) and (days_until_due(task) == 1) and (not task["done"]):
+    if (not task["reminded"]) and (helper.days_until_due(task) == 1) and (not task["done"]):
         email_sent = send_email_reminder(task["user_email"], task["name"], task["due_date"])
 
         if email_sent:
@@ -322,6 +322,7 @@ elif option == "Edit Assignment":
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
 
     
+
 
 
 
