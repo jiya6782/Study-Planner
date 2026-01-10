@@ -9,12 +9,6 @@ import pytz
 # Set local timezone
 LOCAL_TZ = pytz.timezone("America/New_York")
 
-# -------------------- SESSION STATE INITIALIZATION --------------------
-# Initialize study list and user name in session state if not already present
-if "study_list" not in st.session_state:
-    st.session_state.study_list = []
-    st.session_state.user_name = ""
-
 def load_data():
     # Load existing tasks from tasks.json if it exists
     if os.path.exists("tasks.json"):
