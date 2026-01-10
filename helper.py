@@ -1,3 +1,15 @@
+import streamlit as st
+import json
+import os
+from datetime import date, timedelta, datetime
+from streamlit_calendar import calendar
+import smtplib
+from email.mime.text import MIMEText
+import pytz
+
+# Set local timezone
+LOCAL_TZ = pytz.timezone("America/New_York")
+
 # -------------------- SESSION STATE INITIALIZATION --------------------
 # Initialize study list and user name in session state if not already present
 if "study_list" not in st.session_state:
