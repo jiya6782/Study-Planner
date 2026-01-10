@@ -1,9 +1,7 @@
 # -------------------- IMPORTS AND SETUP --------------------
 # Imports the necessary libraries for Streamlit, JSON handling, calendar display, email sending, and time zone management
 import streamlit as st
-import json
-import os
-from datetime import date, timedelta, datetime
+from datetime import datetime
 from streamlit_calendar import calendar
 import pytz
 import helper
@@ -278,6 +276,7 @@ elif option == "Edit Assignment":
 # Input widgets – Streamlit Docs. Streamlit. https://docs.streamlit.io/library/api-reference/widgets
 # Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit.io/develop/concepts/architecture/session-state
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
+
 
 
 
