@@ -5,8 +5,6 @@ import json
 import os
 from datetime import date, timedelta, datetime
 from streamlit_calendar import calendar
-import smtplib
-from email.mime.text import MIMEText
 import pytz
 import helper
 
@@ -279,4 +277,5 @@ elif option == "Edit Assignment":
 # Input widgets – Streamlit Docs. Streamlit. https://docs.streamlit.io/library/api-reference/widgets
 # Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit.io/develop/concepts/architecture/session-state
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
+
 
