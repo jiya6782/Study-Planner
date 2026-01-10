@@ -7,16 +7,6 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-if "user_name" not in st.session_state:
-    st.session_state.user_name = ""
-
-if not st.session_state.user_name:
-    st.session_state.user_name = st.text_input("What's your name?")
-
-# Show welcome if name exists
-if st.session_state.user_name:
-    st.subheader(f"Welcome, {st.session_state.user_name}!")
-
 # Initialize the study list in session_state
 if "study_list" not in st.session_state:
     if os.path.exists("tasks.json"):
@@ -103,6 +93,19 @@ for task in st.session_state.study_list:
 
 # Title
 st.title("📚 Smart Study Planner")
+
+if "user_name" not in st.session_state:
+    st.session_state.user_name = ""
+
+if not st.session_state.user_name:
+    st.session_state.user_name = st.text_input("What's your name?")
+
+# Show welcome if name exists
+if st.session_state.user_name:
+    st.subheader(f"Welcome, {st.session_state.user_name}!")
+    
+with open("tasks.json", "w") as file:
+    json.dump(st.session_state.study_list, file)
 
 # Sidebar menu
 st.sidebar.title("📚 Study Planner")
@@ -313,6 +316,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
