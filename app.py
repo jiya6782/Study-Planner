@@ -105,8 +105,12 @@ if not st.session_state.user_name:
     user_name = st.text_input("What's your name?")
     if user_name.strip():
         st.session_state.user_name = user_name.strip()
+        save_data = {
+            "user_name": st.session_state.user_name,
+            "study_list": st.session_state.study_list
+        }
         with open("tasks.json", "w") as file:
-            json.dump(st.session_state.user_name, file)
+            json.dump(save_data, file)
         
 
 # Show welcome if name exists
@@ -323,6 +327,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
