@@ -96,7 +96,7 @@ elif option == "Remove Assignment":
     if not st.session_state.study_list:
         st.info("Your study list is empty!")
     else:
-        formatted_list(st.session_state.study_list)
+        helper.formatted_list(st.session_state.study_list)
         # Retrieves index for removal
         remove_index = st.number_input(
             f"Which task to remove? (1-{len(st.session_state.study_list)})",
@@ -121,8 +121,8 @@ elif option == "View Assignments":
             st.write(f'Total Assignments: {len(st.session_state.study_list)}')
             st.write(f'Completed: {sum(1 for task in st.session_state.study_list if task["done"])}')
             st.write(f'Incomplete: {sum(1 for task in st.session_state.study_list if not task["done"])}')
-            st.write(f'Due today: {sum(1 for task in st.session_state.study_list if days_until_due(task) == 0)}')
-            st.write(f'Overdue: {sum(1 for task in st.session_state.study_list if days_until_due(task) < 0)}')
+            st.write(f'Due today: {sum(1 for task in st.session_state.study_list if helper.days_until_due(task) == 0)}')
+            st.write(f'Overdue: {sum(1 for task in st.session_state.study_list if helper.days_until_due(task) < 0)}')
         else:
             # Display sorted list
             if sort_option == "Priority":
@@ -160,8 +160,8 @@ elif option == "Next Assignment":
         remaining.sort(key=lambda t: (-t["priority"], t["due_date"]))
         task = remaining[0]
         st.write(f"**You should study: {task['name']}**")
-        st.write(f"- Priority: {priority_word(task['priority'])}")
-        st.write(f"- Due in {days_until_due(task)} days")
+        st.write(f"- Priority: {helper.priority_word(task['priority'])}")
+        st.write(f"- Due in {helper.days_until_due(task)} days")
 
 # 6. Progress
 elif option == "Progress":
@@ -277,6 +277,7 @@ elif option == "Edit Assignment":
 # Input widgets – Streamlit Docs. Streamlit. https://docs.streamlit.io/library/api-reference/widgets
 # Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit.io/develop/concepts/architecture/session-state
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
+
 
 
 
