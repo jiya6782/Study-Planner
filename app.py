@@ -10,17 +10,21 @@ import pytz
 
 LOCAL_TZ = pytz.timezone("America/New_York")
 
-# Initialize the study list in session_state
 if "study_list" not in st.session_state:
+    st.session_state.study_list = []
+    st.session_state.user_name = ""
+
     if os.path.exists("tasks.json"):
-        with open("tasks.json", mode="r") as file:
-            data = json.load(file)
-            st.session_state.study_list = data.get("study_list")
-            st.session_state.user_name = data.get("user_name")
-            
-    else:
-        st.session_state.study_list = []
-        st.session_state.user_name = ""
+        try:
+            with open("tasks.json", "r") as file:
+                data = json.load(file)
+                st.session_state.study_list = data.get("study_list", [])
+                st.session_state.user_name = data.get("user_name", "")
+        except json.JSONDecodeError:
+            # File exists but is corrupted or empty
+            st.warning("tasks.json was corrupted. Resetting data.")
+            st.session_state.study_list = []
+            st.session_state.user_name = ""
     
 for task in st.session_state.study_list:
     if "reminded" not in task:
@@ -354,3 +358,4 @@ elif option == "Edit Assignment":
 
 
     
+
