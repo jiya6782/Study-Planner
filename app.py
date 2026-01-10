@@ -14,19 +14,20 @@ LOCAL_TZ = pytz.timezone("America/New_York")
 
 # -------------------- EMAIL REMINDERS --------------------
 # Check all tasks for reminders due tomorrow and send emails if needed
-for task in st.session_state.study_list:
-    email = task.get("user_email")
-    if not email:
-        continue
-        
-    if (not task["reminded"]) and (helper.days_until_due(task) == 1) and (not task["done"]):
-        email_sent = helper.send_email_reminder(task["user_email"], task["name"], task["due_date"])
-
-        if email_sent:
-            st.toast(f'📧 Email reminder sent for {task["name"]}')
-            task["reminded"] = True
-            # Save updated state after sending email
-            helper.save_data()
+if "study_list" in st.session_state:
+    for task in st.session_state.study_list:
+        email = task.get("user_email")
+        if not email:
+            continue
+            
+        if (not task["reminded"]) and (helper.days_until_due(task) == 1) and (not task["done"]):
+            email_sent = helper.send_email_reminder(task["user_email"], task["name"], task["due_date"])
+    
+            if email_sent:
+                st.toast(f'📧 Email reminder sent for {task["name"]}')
+                task["reminded"] = True
+                # Save updated state after sending email
+                helper.save_data()
 
 
 # -------------------- STREAMLIT LAYOUT --------------------
@@ -277,6 +278,7 @@ elif option == "Edit Assignment":
 # Input widgets – Streamlit Docs. Streamlit. https://docs.streamlit.io/library/api-reference/widgets
 # Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit.io/develop/concepts/architecture/session-state
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
+
 
 
 
