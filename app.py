@@ -96,9 +96,8 @@ def send_email_reminder(to_email, task_name, due_date):
     """
     sender_email = st.secrets["email"]["user"]
     sender_password = st.secrets["email"]["password"]
-    msg["From"] = "📚 Study Plan Reminder <{}>".format(sender_email)
-    msg["To"] = to_email
-    msg["Subject"] = f'Reminder: {task_name} due soon!'
+
+    # Create the email message using MIMEText
     body = f'''
 Hi!
 This is a reminder that your assignment:
@@ -107,7 +106,11 @@ Due date: {due_date}
 
 Good luck studying! 💪
     '''
-    msg.attach(MIMEText(body, "plain"))
+    msg = MIMEText(body, "plain")
+    msg["From"] = f"📚 Study Plan Reminder <{sender_email}>"
+    msg["To"] = to_email
+    msg["Subject"] = f"Reminder: {task_name} due soon!"
+
     try:
         with smtplib.SMTP("smtp.gmail.com", 587) as server:
             server.starttls()
@@ -427,6 +430,7 @@ Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit
 im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
 """
     
+
 
 
 
