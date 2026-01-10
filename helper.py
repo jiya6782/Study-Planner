@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import json
 
 TASK_FILE = "tasks.json"
 # Initialize the study list in session_state
