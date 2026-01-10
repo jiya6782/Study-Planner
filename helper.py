@@ -34,6 +34,15 @@ for task in st.session_state.study_list:
     if "reminded" not in task:
         task["reminded"] = False
 
+def save_data():
+    try: 
+        with open(TASK_FILE, "w") as f:
+            json.dump({
+                "user_name": st.session_state.user_name,
+                "study_list": st.session_state.study_list
+            }, f)
+    except Exception as e:
+        st.error(f'Failed to save data: {e}')
 
 # -------------------- HELPER FUNCTIONS --------------------
 def priority_word(priority):
