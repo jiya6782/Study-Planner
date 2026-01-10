@@ -14,10 +14,13 @@ LOCAL_TZ = pytz.timezone("America/New_York")
 if "study_list" not in st.session_state:
     if os.path.exists("tasks.json"):
         with open("tasks.json", mode="r") as file:
-            st.session_state.study_list = json.load(file)
+            data = json.load(file)
+            st.session_state.study_list = data.get("study_list")
+            st.session_state.user_name = data.get("user_name")
             
     else:
         st.session_state.study_list = []
+        st.session_state.user_name = ""
     
 for task in st.session_state.study_list:
     if "reminded" not in task:
@@ -351,6 +354,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
