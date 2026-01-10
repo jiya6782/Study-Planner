@@ -1,21 +1,17 @@
+import json
 import streamlit as st
 from datetime import date, timedelta, datetime
 from streamlit_calendar import calendar
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 import pytz
 import helper
 
 LOCAL_TZ = pytz.timezone("America/New_York")
 
 
-
-
-
 # Title
 st.title("📚 Smart Study Planner")
 
+# Initializes sestion_state.user_name and study_list if it hasn't already
 if "user_name" not in st.session_state:
     st.session_state.user_name = ""
 
@@ -23,12 +19,7 @@ if not st.session_state.user_name:
     user_name = st.text_input("What's your name?", key="name_input")
     if user_name and user_name.strip():
         st.session_state.user_name = user_name.strip()
-        save_data = {
-            "user_name": st.session_state.user_name,
-            "study_list": st.session_state.study_list
-        }
-        with open("tasks.json", "w") as file:
-            json.dump(save_data, file)
+        helper.save_data()
         
 
 # Show welcome if name exists
@@ -265,6 +256,7 @@ elif option == "Edit Assignment":
                 st.success("Email updated!")
             else:
                 st.info("Email unchanged")
+
 
 
 
