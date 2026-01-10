@@ -28,11 +28,7 @@ for task in st.session_state.study_list:
             st.toast(f'📧 Email reminder sent for {task["name"]}')
             task["reminded"] = True
             # Save updated state after sending email
-            with open("tasks.json", "w") as file:
-                json.dump({
-                    "user_name": st.session_state.user_name,
-                    "study_list": st.session_state.study_list
-                }, file)
+            helper.save_data()
 
 
 # -------------------- STREAMLIT LAYOUT --------------------
@@ -47,11 +43,7 @@ if not st.session_state.user_name:
     if user_name and user_name.strip():
         st.session_state.user_name = user_name.strip()
         # Save initial data to JSON
-        with open("tasks.json", "w") as file:
-            json.dump({
-                "user_name": st.session_state.user_name,
-                "study_list": st.session_state.study_list
-            }, file)
+        helper.save_data()
 
 # Display welcome message if name exists
 if st.session_state.user_name:
@@ -97,11 +89,7 @@ if option == "Add Assignment":
         })
         st.success(f"Assignment '{name}' added!")
         # Saves the assignment to the json file
-        with open("tasks.json", "w") as file:
-            json.dump({
-                "user_name": st.session_state.user_name,
-                "study_list": st.session_state.study_list
-            }, file)
+        helper.save_data()
 
 # 2. Remove Assignment
 elif option == "Remove Assignment":
@@ -120,11 +108,7 @@ elif option == "Remove Assignment":
             removed = st.session_state.study_list.pop(remove_index-1)
             st.success(f"Removed Assignment: {removed['name']}")
             # Save updated state to JSON
-            with open("tasks.json", "w") as file:
-                json.dump({
-                    "user_name": st.session_state.user_name,
-                    "study_list": st.session_state.study_list
-                }, file)
+            helper.save_data()
 
 # 3. View Assignments
 elif option == "View Assignments":
@@ -166,12 +150,7 @@ elif option == "Mark Complete":
             # Update completion status and save
             st.session_state.study_list[complete_index-1]["done"] = True
             st.success(f"Marked '{st.session_state.study_list[complete_index-1]['name']}' as studied!")
-            with open("tasks.json", "w") as file:
-                json.dump({
-                    "user_name": st.session_state.user_name,
-                    "study_list": st.session_state.study_list
-                }, file)
-
+            helper.save_data()
 # 5. Next Assignment
 elif option == "Next Assignment":
     st.header("Next Assignment to Study")
@@ -202,11 +181,7 @@ elif option == "Progress":
 elif option == "Clear Assignments":
     if st.sidebar.button("Clear All Assignments"):
         st.session_state.study_list = []
-        with open("tasks.json", "w") as file:
-            json.dump({
-                "user_name": st.session_state.user_name,
-                "study_list": st.session_state.study_list
-            }, file)
+        helper.save_data()
         st.success("All Assignments cleared!")
 
 # 8. Assignment Calendar
@@ -257,11 +232,7 @@ elif option == "Edit Assignment":
             if st.button("Save", key="save_name"):
                 if new_name.strip():
                     task["name"] = new_name
-                    with open("tasks.json", "w") as file:
-                        json.dump({
-                            "user_name": st.session_state.user_name,
-                            "study_list": st.session_state.study_list
-                        }, file)
+                    helper.save_data()
                 st.success("Assignment updated!")
 
         # Edit Priority
@@ -271,11 +242,7 @@ elif option == "Edit Assignment":
             new_priority = st.selectbox("Priority", priority_labels, index=priority_labels.index(current_priority))
             if st.button("Save", key="save_priority"):
                 task["priority"] = priority_labels.index(new_priority) + 1
-                with open("tasks.json", "w") as file:
-                        json.dump({
-                            "user_name": st.session_state.user_name,
-                            "study_list": st.session_state.study_list
-                        }, file)
+                helper.save_data()
                 st.success("Assignment updated!")
 
         # Edit Due Date
@@ -283,11 +250,7 @@ elif option == "Edit Assignment":
             new_due_date = st.date_input("What is the date it's due? ", value=datetime.strptime(task["due_date"], "%Y-%m-%d").date())
             if st.button("Save", key="save_due"):
                 task["due_date"] = new_due_date.isoformat()
-                with open("tasks.json", "w") as file:
-                        json.dump({
-                            "user_name": st.session_state.user_name,
-                            "study_list": st.session_state.study_list
-                        }, file)
+                helper.save_data()
                 st.success("Assignment updated!")
         
         # Edit Email
@@ -301,11 +264,7 @@ elif option == "Edit Assignment":
                 if new_email != task.get("user_email"):
                     task["user_email"] = new_email
                     task["reminded"] = False
-                with open("tasks.json", "w") as file:
-                        json.dump({
-                            "user_name": st.session_state.user_name,
-                            "study_list": st.session_state.study_list
-                        }, file)
+                helper.save_data()
                 st.success("Email updated!")
             else:
                 st.info("Email unchanged")
@@ -320,19 +279,4 @@ elif option == "Edit Assignment":
 # Input widgets – Streamlit Docs. Streamlit. https://docs.streamlit.io/library/api-reference/widgets
 # Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit.io/develop/concepts/architecture/session-state
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
 
