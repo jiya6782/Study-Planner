@@ -37,7 +37,7 @@ if "study_list" in st.session_state:
             email_sent = helper.send_email_reminder(task["user_email"], task["name"], task["due_date"])
     
             if email_sent:
-                st.toast(f'📧 Email reminder sent for {task["name"]}')
+                st.success(f'📧 Email reminder sent for {task["name"]}')
                 task["reminded"] = True
                 # Save updated state after sending email
                 helper.save_data()
@@ -291,6 +291,7 @@ elif option == "Edit Assignment":
 # Input widgets – Streamlit Docs. Streamlit. https://docs.streamlit.io/library/api-reference/widgets
 # Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit.io/develop/concepts/architecture/session-state
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
+
 
 
 
