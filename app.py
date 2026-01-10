@@ -41,9 +41,7 @@ for task in st.session_state.study_list:
 
 # -------------------- HELPER FUNCTIONS --------------------
 def priority_word(priority):
-    """
-    Converts numeric priority (1-3) to a string representation ("Low", "Medium", "High").
-    """
+    # Converts numeric priority (1-3) to a string representation ("Low", "Medium", "High").
     if priority == 3:
         return "High"
     elif priority == 2:
@@ -53,24 +51,22 @@ def priority_word(priority):
 
 
 def days_until_due(task):
-    """
-    Returns the number of days until a task is due.
-    Positive if due in future, 0 if due today, negative if overdue.
-    """
+    #Returns the number of days until a task is due.
+    #Positive if due in future, 0 if due today, negative if overdue.
+    
     due = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
     today = datetime.now(LOCAL_TZ).date()
     return (due - today).days
 
 
 def formatted_list(list_to_print):
-    """
-    Displays a formatted list of tasks with their:
-    - Name
-    - Priority
-    - Due date status (due today, overdue, or days left)
-    - Completion status
-    - Associated email (if any)
-    """
+    #Displays a formatted list of tasks with their:
+    #- Name
+    #- Priority
+    #- Due date status (due today, overdue, or days left)
+    #- Completion status
+    #- Associated email (if any)
+    
     for i, task in enumerate(list_to_print, 1):
         status = "Studied" if task["done"] else "Not studied"
         if days_until_due(task) == 0:
@@ -90,11 +86,10 @@ def formatted_list(list_to_print):
 
 
 def send_email_reminder(to_email, task_name, due_date):
-    """
-    Sends an email reminder for a task due tomorrow.
-    Uses email credentials stored in Streamlit secrets.
-    Returns True if email sent successfully, False otherwise.
-    """
+    #Sends an email reminder for a task due tomorrow.
+    #Uses email credentials stored in Streamlit secrets.
+    #Returns True if email sent successfully, False otherwise.
+    
     sender_email = st.secrets["email"]["user"]
     sender_password = st.secrets["email"]["password"]
 
@@ -431,6 +426,7 @@ elif option == "Edit Assignment":
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
 
     
+
 
 
 
