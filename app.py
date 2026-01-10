@@ -60,11 +60,7 @@ if option == "Add Assignment":
             "user_email": user_email
         })
         st.success(f"Task '{name}' added!")
-    with open("tasks.json", "w") as file:
-        json.dump({
-            "user_name": st.session_state.user_name,
-            "study_list": st.session_state.study_list
-        }, file)
+    save_data()
 
 # -------------------- REMOVE TASK --------------------
 elif option == "Remove Assignment":
@@ -256,6 +252,7 @@ elif option == "Edit Assignment":
                 st.success("Email updated!")
             else:
                 st.info("Email unchanged")
+
 
 
 
