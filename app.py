@@ -17,11 +17,11 @@ if "study_list" not in st.session_state:
             data = json.load(file)
             st.session_state.study_list = data.get("study_list")
             st.session_state.user_name = data.get("user_name")
-
+            
     else:
         st.session_state.study_list = []
         st.session_state.user_name = ""
-
+    
 for task in st.session_state.study_list:
     if "reminded" not in task:
         task["reminded"] = False
@@ -88,7 +88,7 @@ for task in st.session_state.study_list:
     email = task.get("user_email")
     if not email:
         continue
-
+        
     if (not task["reminded"]) and (days_until_due(task) == 1) and (not task["done"]):
         email_sent = send_email_reminder(task["user_email"], task["name"], task["due_date"])
 
@@ -114,12 +114,12 @@ if not st.session_state.user_name:
         }
         with open("tasks.json", "w") as file:
             json.dump(save_data, file)
-
+        
 
 # Show welcome if name exists
 if st.session_state.user_name:
     st.subheader(f"Welcome, {st.session_state.user_name}!")
-
+    
 
 # Sidebar menu
 st.sidebar.title("📚 Study Planner")
@@ -267,7 +267,7 @@ elif option == "Assignment Calendar":
         }
         for task in st.session_state.study_list
     ]
-
+    
     calendar_options = {
         "editable": False,
         "selectable": False,
@@ -293,7 +293,7 @@ elif option == "Edit Assignment":
             f"Which assignment would you like to edit? (1-{len(st.session_state.study_list)})",
             min_value=1, max_value=len(st.session_state.study_list), step=1
         )
-
+        
         task = st.session_state.study_list[edit_index - 1]
         change_option = st.selectbox("Edit assignment options", ["Name", "Priority", "Due Date", "Email"])
         if change_option == "Name":
@@ -307,7 +307,7 @@ elif option == "Edit Assignment":
                             "study_list": st.session_state.study_list
                         }, file)
                 st.success("Assignment updated!")
-
+        
         elif change_option == "Priority":
             priority_labels = ["Low", "Medium", "High"]
             current_priority = priority_labels[task["priority"] - 1]
@@ -331,7 +331,7 @@ elif option == "Edit Assignment":
                             "study_list": st.session_state.study_list
                         }, file)
                 st.success("Assignment updated!")
-
+                
         elif change_option == "Email":
             current_email = task.get("user_email") or ""
             new_email = st.text_input("Your Email for reminders (leave blank if you don't want reminders)")
@@ -350,4 +350,7 @@ elif option == "Edit Assignment":
                 st.success("Email updated!")
             else:
                 st.info("Email unchanged")
-                
+            
+
+
+    
