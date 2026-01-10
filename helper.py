@@ -2,7 +2,6 @@ import streamlit as st
 import json
 import os
 from datetime import date, timedelta, datetime
-from streamlit_calendar import calendar
 import smtplib
 from email.mime.text import MIMEText
 import pytz
