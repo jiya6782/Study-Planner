@@ -7,7 +7,6 @@ from datetime import date, timedelta, datetime
 from streamlit_calendar import calendar
 import smtplib
 from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 import pytz
 
 # Set local timezone
@@ -97,7 +96,6 @@ def send_email_reminder(to_email, task_name, due_date):
     """
     sender_email = st.secrets["email"]["user"]
     sender_password = st.secrets["email"]["password"]
-    msg = MIMEMultipart()
     msg["From"] = "📚 Study Plan Reminder <{}>".format(sender_email)
     msg["To"] = to_email
     msg["Subject"] = f'Reminder: {task_name} due soon!'
@@ -429,6 +427,7 @@ Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit
 im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
 """
     
+
 
 
 
