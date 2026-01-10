@@ -100,7 +100,11 @@ for task in st.session_state.study_list:
             st.toast(f'📧 Email reminder sent for {task["name"]}')
             task["reminded"] = True
             with open("tasks.json", "w") as file:
-                json.dump(st.session_state.study_list, file)
+                json.dump({
+                    "user_name": st.session_state.user_name,
+                    "study_list": st.session_state.study_list
+                }, file)
+
 
 # Title
 st.title("📚 Smart Study Planner")
@@ -161,11 +165,11 @@ if option == "Add Assignment":
             "user_email": user_email
         })
         st.success(f"Task '{name}' added!")
-    with open("tasks.json", "w") as file:
-        json.dump({
-            "user_name": st.session_state.user_name,
-            "study_list": st.session_state.study_list
-        }, file)
+        with open("tasks.json", "w") as file:
+            json.dump({
+                "user_name": st.session_state.user_name,
+                "study_list": st.session_state.study_list
+            }, file)
 
 # -------------------- REMOVE TASK --------------------
 elif option == "Remove Assignment":
@@ -181,11 +185,11 @@ elif option == "Remove Assignment":
         if st.button("Remove Assignment"):
             removed = st.session_state.study_list.pop(remove_index-1)
             st.success(f"Removed Assignment: {removed['name']}")
-        with open("tasks.json", "w") as file:
-            json.dump({
-                "user_name": st.session_state.user_name,
-                "study_list": st.session_state.study_list
-            }, file)
+            with open("tasks.json", "w") as file:
+                json.dump({
+                    "user_name": st.session_state.user_name,
+                    "study_list": st.session_state.study_list
+                }, file)
 
 # -------------------- VIEW TASKS --------------------
 elif option == "View Assignments":
@@ -224,11 +228,11 @@ elif option == "Mark Complete":
         if st.button("Mark as Studied"):
             st.session_state.study_list[complete_index-1]["done"] = True
             st.success(f"Marked '{st.session_state.study_list[complete_index-1]['name']}' as studied!")
-        with open("tasks.json", "w") as file:
-            json.dump({
-                "user_name": st.session_state.user_name,
-                "study_list": st.session_state.study_list
-            }, file)
+            with open("tasks.json", "w") as file:
+                json.dump({
+                    "user_name": st.session_state.user_name,
+                    "study_list": st.session_state.study_list
+                }, file)
 
 # -------------------- NEXT TASK --------------------
 elif option == "Next Assignment":
@@ -361,5 +365,6 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
