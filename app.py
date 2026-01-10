@@ -117,7 +117,10 @@ if not st.session_state.user_name:
             "study_list": st.session_state.study_list
         }
         with open("tasks.json", "w") as file:
-            json.dump(save_data, file)
+            json.dump({
+                "user_name": st.session_state.user_name,
+                "study_list": st.session_state.study_list
+            }, file)
         
 
 # Show welcome if name exists
@@ -358,4 +361,5 @@ elif option == "Edit Assignment":
 
 
     
+
 
