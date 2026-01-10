@@ -107,7 +107,6 @@ if not st.session_state.user_name:
         st.session_state.user_name = user_name.strip()
         with open("tasks.json", "w") as file:
             json.dump(st.session_state.user_name, file)
-        st.experimental_rerun()
         
 
 # Show welcome if name exists
@@ -324,6 +323,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
