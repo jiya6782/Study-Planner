@@ -54,7 +54,6 @@ st.sidebar.markdown("💡 Tip: Use negative days for overdue assignments.")
 st.sidebar.write("Select an action: ")
 #st.sidebar.markdown("---")
 option = st.sidebar.selectbox(
-    "Menu",
     ["Add Assignment", "Edit Assignment", "Remove Assignment", "View Assignments", "Mark Complete", "Next Assignment", "Progress", "Assignment Calendar", "Clear Assignments"]
 )
 
@@ -276,6 +275,7 @@ elif option == "Edit Assignment":
 # Input widgets – Streamlit Docs. Streamlit. https://docs.streamlit.io/library/api-reference/widgets
 # Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit.io/develop/concepts/architecture/session-state
 # im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
+
 
 
 
