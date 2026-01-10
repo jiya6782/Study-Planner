@@ -40,7 +40,7 @@ def save_data():
                 "study_list": st.session_state.study_list
             }, f)
     except Exception as e:
-        st.error(f'Failed to save data: {}')
+        st.error(f'Failed to save data: {e}')
         
 def priority_word(priority):
     if priority == 3:
