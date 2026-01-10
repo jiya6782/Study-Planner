@@ -8,10 +8,12 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 TASK_FILE = "tasks.json"
+LOCAL_TZ = pytz.timezone("America/New_York")
+
 # Initialize the study list in session_state
 if "study_list" not in st.session_state:
-    if os.path.exists("tasks.json"):
-        with open("tasks.json", mode="r") as file:
+    if os.path.exists(TASK_FILE):
+        with open(TASK_FILE, mode="r") as file:
             data = json.load(file)
             st.session_state.study_list = data.get("study_list")
             st.session_state.user_name = data.get("user_name")
@@ -31,11 +33,15 @@ def load_data():
     return [], ""
 
 def save_data():
-    with open(TASK_FILE, "w") as f:
-        json.dump({
-            "user_name": st.session_state.user_name,
-            "study_list": st.session_state.study_list
-        }, f)
+    try: 
+        with open(TASK_FILE, "w") as f:
+            json.dump({
+                "user_name": st.session_state.user_name,
+                "study_list": st.session_state.study_list
+            }, f)
+    except Exception as e:
+        st.error(f'Failed to save data: {}')
+        
 def priority_word(priority):
     if priority == 3:
         return "High"
