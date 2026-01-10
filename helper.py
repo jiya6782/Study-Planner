@@ -15,6 +15,19 @@ if "study_list" not in st.session_state:
     st.session_state.study_list = []
     st.session_state.user_name = ""
 
+def load_data():
+    # Load existing tasks from tasks.json if it exists
+    if os.path.exists("tasks.json"):
+        try:
+            with open("tasks.json", "r") as file:
+                data = json.load(file)
+                st.session_state.study_list = data.get("study_list", [])
+                st.session_state.user_name = data.get("user_name", "")
+        except json.JSONDecodeError:
+            # If the file exists but is corrupted, reset data
+            st.warning("tasks.json was corrupted. Resetting data.")
+            st.session_state.study_list = []
+            st.session_state.user_name = ""
 
 def save_data():
     try: 
