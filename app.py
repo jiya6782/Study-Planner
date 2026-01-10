@@ -6,6 +6,9 @@ from streamlit_calendar import calendar
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import pytz
+
+LOCAL_TZ = pytz.timezone("America/New_York")
 
 # Initialize the study list in session_state
 if "study_list" not in st.session_state:
@@ -49,7 +52,8 @@ def formatted_list(list_to_print):
 
 def days_until_due(task):
     due = datetime.strptime(task["due_date"], "%Y-%m-%d").date()
-    return (due - date.today()).days
+    today = datetime.now(LOCAL_TZ).date()
+    return (due - today).days
 
 def send_email_reminder(to_email, task_name, due_date):
     sender_email = st.secrets["email"]["user"]
@@ -124,7 +128,7 @@ if option == "Add Assignment":
     name = st.text_input("Assignment/Test Name")
     priority = st.selectbox("Priority", ["Low", "Medium", "High"])
     priority_num = {"Low":1, "Medium":2, "High":3}[priority]
-    due_date = st.date_input("What is the date it's due? ", value=date.today())
+    due_date = st.date_input("What is the date it's due? ", value=datetime.now(LOCAL_TZ).date())
     user_email = st.text_input("Your Email for reminders (leave blank if you don't want reminders)")
     user_email = user_email.strip()
     if user_email == "":
@@ -316,6 +320,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
