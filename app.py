@@ -102,14 +102,18 @@ if "user_name" not in st.session_state:
     st.session_state.user_name = ""
 
 if not st.session_state.user_name:
-    st.session_state.user_name = st.text_input("What's your name?")
+    user_name = st.text_input("What's your name?")
+    if user_name.strip():
+        st.session_state.user_name = user_name.strip()
+        with open("tasks.json", "w") as file:
+            json.dump(st.session_state.user_name, file)
+        st.experimental_rerun()
+        
 
 # Show welcome if name exists
 if st.session_state.user_name:
     st.subheader(f"Welcome, {st.session_state.user_name}!")
     
-with open("tasks.json", "w") as file:
-    json.dump(st.session_state.study_list, file)
 
 # Sidebar menu
 st.sidebar.title("📚 Study Planner")
@@ -320,6 +324,7 @@ elif option == "Edit Assignment":
 
 
     
+
 
 
 
