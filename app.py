@@ -419,17 +419,18 @@ elif option == "Edit Assignment":
                 st.info("Email unchanged")
 
 
-"""
-These are my citations: 
 
-Basic concepts of Streamlit. Streamlit Docs. Accessed January 2026. https://docs.streamlit.io/get-started/fundamentals/main-concepts
-Acsany, Philipp. Working With JSON Data in Python. Real Python, Aug. 20, 2025. https://realpython.com/python-json/
-OS Module in Python with Examples. GeeksforGeeks, updated Sept. 8, 2025. https://www.geeksforgeeks.org/os-module-python-examples/
-Input widgets – Streamlit Docs. Streamlit. https://docs.streamlit.io/library/api-reference/widgets
-Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit.io/develop/concepts/architecture/session-state
-im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
-"""
+# These are my citations: 
+
+# Basic concepts of Streamlit. Streamlit Docs. Accessed January 2026. https://docs.streamlit.io/get-started/fundamentals/main-concepts
+# Acsany, Philipp. Working With JSON Data in Python. Real Python, Aug. 20, 2025. https://realpython.com/python-json/
+# OS Module in Python with Examples. GeeksforGeeks, updated Sept. 8, 2025. https://www.geeksforgeeks.org/os-module-python-examples/
+# Input widgets – Streamlit Docs. Streamlit. https://docs.streamlit.io/library/api-reference/widgets
+# Add statefulness to apps (Session State). Streamlit Docs. https://docs.streamlit.io/develop/concepts/architecture/session-state
+# im-perativa/streamlit-calendar. GitHub repository. https://github.com/im-perativa/streamlit-calendar
+
     
+
 
 
 
